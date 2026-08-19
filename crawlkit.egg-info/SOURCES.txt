@@ -1,0 +1,15 @@
+README.md
+pyproject.toml
+crawlkit/datetimeutil.py
+crawlkit/health.py
+crawlkit/logsetup.py
+crawlkit/metrics.py
+crawlkit/pacing.py
+crawlkit/robots.py
+crawlkit/textutil.py
+crawlkit/urlutil.py
+crawlkit.egg-info/PKG-INFO
+crawlkit.egg-info/SOURCES.txt
+crawlkit.egg-info/dependency_links.txt
+crawlkit.egg-info/requires.txt
+crawlkit.egg-info/top_level.txt
