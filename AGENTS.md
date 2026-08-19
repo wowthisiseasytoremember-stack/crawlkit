@@ -11,7 +11,7 @@ goal: >-
   production-grade primitives that any Python project can `pip install -e
   ./crawlkit` to get a full web ingestion + classification + observability
   stack without rebuilding from scratch.
-status: phase-1-active
+status: active
 stack: [python, playwright, pydantic, prometheus-client, beautifulsoup4, lxml]
 entrypoints:
   - crawlkit.textutil
@@ -31,55 +31,55 @@ modules:
   - name: Text utilities
     path: crawlkit/textutil.py
     does: Text normalization, dedup, paragraph assembly
-    status: phase-1
+    status: shipped
   - name: URL utilities
     path: crawlkit/urlutil.py
     does: URL parsing, normalization, dedup-key extraction
-    status: phase-1
+    status: shipped
   - name: Date utilities
     path: crawlkit/datetimeutil.py
     does: Date parsing across formats, epoch conversion
-    status: phase-1
+    status: shipped
   - name: Prometheus metrics
     path: crawlkit/metrics.py
     does: Counters, histograms, gauges + exposition
-    status: phase-1
+    status: shipped
   - name: Structured logging
     path: crawlkit/logsetup.py
     does: JSON logging + StructuredLogger with bind/timer
-    status: phase-1
+    status: shipped
   - name: Robots.txt gate
     path: crawlkit/robots.py
     does: Compliance check before fetch
-    status: phase-1
+    status: shipped
   - name: Health probe
     path: crawlkit/health.py
     does: Pre-flight connectivity + DOM integrity check
-    status: phase-1
+    status: shipped
   - name: Rate limiter
     path: crawlkit/pacing.py
     does: Token-bucket pacer per host
-    status: phase-1
+    status: shipped
   - name: CDP browser session
     path: crawlkit/browser.py
     does: Chrome DevTools Protocol session + media aborter + age-gate dismisser
-    status: phase-2
+    status: planned
   - name: Adapter base classes
     path: crawlkit/adapters/base.py
     does: PatternCrawlAdapter + SourceAdapter base classes for multi-source ingestion
-    status: phase-2
+    status: planned
   - name: SQLite storage
     path: crawlkit/storage.py
     does: Idempotent upsert + normalized tag tables + JSONL/CSV export
-    status: phase-2
+    status: planned
   - name: Pydantic models
     path: crawlkit/models.py
     does: ParsedStory + StoryRecord data models
-    status: phase-2
+    status: planned
   - name: Weighted taxonomy classifier
     path: crawlkit/classifier.py
     does: Layer-3 multi-source scoring with confidence
-    status: phase-2
+    status: planned
 updated: 2026-08-19 17:42 UTC
 ---
 
