@@ -4,6 +4,24 @@
 
 ## 2026-08-19 — Sprint 1: models + classifier extracted
 
+
+## 2026-08-19 — Sprint 2: storage.py extracted
+
+**What changed:**
+- `crawlkit/storage.py` (~365 LOC) — SQLite + WAL + normalized tag index + queue + JSONL export, copied from ccarchive with imports refactored (`from crawlkit.datetimeutil` + `from crawlkit.models`)
+- `crawlkit/tests/test_storage.py` — moved from ccarchive/tests/, imports updated
+- `crawlkit/tests/test_concurrent_writes.py` — NEW, 2 multi-process tests using `multiprocessing.Pool`:
+  - `test_concurrent_writes_no_lost_data` — 4 processes × 50 unique rows = 200 rows survive
+  - `test_idempotent_upsert_under_contention` — 4 processes write same dedup_key = 1 row survives
+- `Store.__init__` gained `init_schema: bool = True` flag — skip SCHEMA execution when caller knows DB is already initialized (faster, avoids SCHEMA contention under multi-process load)
+
+**Implementation note:** upsert_story rewritten to use SQLite-native `INSERT ... ON CONFLICT(dedup_key) DO UPDATE` + `RETURNING id, revision` for atomicity. The earlier separate SELECT + INSERT/UPDATE pattern had race conditions under concurrent writers; the explicit `BEGIN IMMEDIATE` wrapper actually caused lock contention with SQLite's autocommit + WAL mode. The new pattern lets SQLite handle atomicity internally.
+
+**Verification:**
+- crawlkit 13 tests OK (was 10 before sprint 2)
+- ccarchive 6 tests OK (was 7 — lost test_storage which moved to crawlkit)
+- `python3 scripts/crawl_json_api.py` smoke test works via ccarchive shim (1 sub, 100 posts, 3.6s)
+
 **What changed:**
 - `crawlkit/models.py` — Flag constants, Discovered/ParsedStory/StoryRecord dataclasses, normalize_terms, build_attribution_block, strip_attribution, build_record
 - `crawlkit/classifier.py` — StoryClassifier + TaxonomyCategory + classify_story. `_EMBEDDED_FALLBACK` taxonomy constant. `DEFAULT_TAXONOMY_PATH = None` — callers must specify or use embedded fallback
