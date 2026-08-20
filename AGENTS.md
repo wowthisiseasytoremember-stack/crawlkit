@@ -54,7 +54,7 @@ modules:
     status: shipped
   - name: Health probe
     path: crawlkit/health.py
-    does: Pre-flight connectivity + DOM integrity check
+    does: Pre-flight connectivity + DOM integrity check (generic; registry injected by caller)
     status: shipped
   - name: Rate limiter
     path: crawlkit/pacing.py
@@ -71,21 +71,21 @@ modules:
   - name: SQLite storage
     path: crawlkit/storage.py
     does: Idempotent upsert + normalized tag tables + JSONL/CSV export
-    status: planned
+    status: shipped
   - name: Pydantic models
     path: crawlkit/models.py
     does: ParsedStory + StoryRecord data models
-    status: planned
+    status: shipped
   - name: Weighted taxonomy classifier
     path: crawlkit/classifier.py
     does: Layer-3 multi-source scoring with confidence
-    status: planned
-updated: 2026-08-19 17:42 UTC
+    status: shipped
+updated: 2026-08-20 00:55 UTC
 ---
 
 # AGENTS.md — crawlkit
 
-**Last Updated:** 2026-08-19 17:42 UTC
+**Last Updated:** 2026-08-20 00:55 UTC
 
 ---
 

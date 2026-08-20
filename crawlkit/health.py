@@ -1,26 +1,37 @@
-"""Adapter & Endpoint Health Monitor (Inspired by FloraTrack health_monitor.py)."""
+"""Adapter & Endpoint Health Monitor (Inspired by FloraTrack health_monitor.py).
+
+Generic: callers inject the adapter registry and an open browser session.
+ccarchive supplies both (browser + adapters still live there pending the
+crawlkit Sprint 2 migration).
+"""
 
 from __future__ import annotations
 
 import logging
 from typing import Any
 
-from .adapters import REGISTRY
-from .browser import CDPSession
 from .robots import RobotsGate
+from .textutil import soup_of
 
-log = logging.getLogger("ccarchive.health")
+log = logging.getLogger("crawlkit.health")
 
 
-async def check_adapter_health(session: CDPSession, site_id: str) -> dict[str, Any]:
-    if site_id not in REGISTRY:
+async def check_adapter_health(
+    session: Any, site_id: str, registry: dict[str, Any]
+) -> dict[str, Any]:
+    """Run a single health check for site_id against the injected registry.
+
+    session: an open CDPSession (or compatible fetcher) with `.fetch()`.
+    registry: dict[str, type] mapping site_id -> adapter class.
+    """
+    if site_id not in registry:
         return {
             "site": site_id,
             "status": "FAIL",
             "reason": f"Adapter {site_id} not registered",
         }
 
-    adapter = REGISTRY[site_id]()
+    adapter = registry[site_id]()
     start_url = (
         adapter.default_start_urls[0]
         if adapter.default_start_urls
@@ -33,7 +44,8 @@ async def check_adapter_health(session: CDPSession, site_id: str) -> dict[str, A
             session.robots = RobotsGate(enabled=False)
 
         res = await session.fetch(
-            start_url, wait_for=list(adapter.listing_ready_selectors)
+            start_url,
+            wait_for=list(getattr(adapter, "listing_ready_selectors", ()) or ("body",)),
         )
         if res.status and res.status >= 400:
             return {
@@ -42,9 +54,6 @@ async def check_adapter_health(session: CDPSession, site_id: str) -> dict[str, A
                 "http_status": res.status,
                 "url": start_url,
             }
-
-        # Check basic DOM integrity
-        from .textutil import soup_of
 
         soup = soup_of(res.html)
         links = soup.find_all("a", href=True)
@@ -64,12 +73,3 @@ async def check_adapter_health(session: CDPSession, site_id: str) -> dict[str, A
         }
     except Exception as exc:
         return {"site": site_id, "status": "FAIL", "reason": str(exc), "url": start_url}
-
-
-async def run_health_checks(cdp_url: str) -> list[dict[str, Any]]:
-    results = []
-    async with CDPSession(endpoint=cdp_url) as session:
-        for site_id in REGISTRY.keys():
-            res = await check_adapter_health(session, site_id)
-            results.append(res)
-    return results

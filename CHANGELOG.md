@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2026-08-20 — health.py made generic (registry injected)
+
+**What changed:**
+- `crawlkit/health.py` — removed the broken `from .adapters import REGISTRY` and `from .browser import CDPSession` module-level imports (neither module was extracted; Sprint 2 pending). `check_adapter_health()` now takes `(session, site_id, registry)` — callers inject the adapter registry and an open session. `run_health_checks()` removed here (browser lives in ccarchive); ccarchive/health.py wires its own REGISTRY + CDPSession into the generic check.
+- Defensive fetch: `listing_ready_selectors` optional, falls back to `("body",)`.
+
+**Why:** ccarchive CLI crashed on import (`ModuleNotFoundError: crawlkit.adapters`). The health logic referenced adapters/browser that still live in ccarchive.
+
+**Verification:** `ccarchive health` — all 5 adapters PASS (xnxx_stories, literotica, ao3, reddit, fictionmania).
+
 ## 2026-08-19 — Phase 1 extracted from ccarchive
 
 ## 2026-08-19 — Sprint 1: models + classifier extracted
