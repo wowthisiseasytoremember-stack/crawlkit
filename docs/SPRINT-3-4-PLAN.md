@@ -1,22 +1,25 @@
 # Sprint 3–4 Plan — Complete the crawlkit decomposition (verified 2026-08-20)
 
 **Supersedes parts of:** `docs/PHASE-2-EXTRACTION-PLAN.md` and `docs/SPRINT-3-BROWSER-DETAIL.md` where noted.
-**Status:** **Sprint 3 + Sprint 4 DONE (2026-08-20).** Sprint 1 (models+classifier) and Sprint 2 (storage) DONE. Remaining: Sprint 4.5 (glue refactor + clean-install verification).
+**Status:** **COMPLETE (2026-08-20).** Sprints 1-4.5 all DONE and verified.
 
 ---
 
-## Current state (verified 2026-08-20)
+## Current state (final, verified 2026-08-20)
 
 | Module | LOC | In crawlkit? | Notes |
 |---|---|---|---|
 | textutil, urlutil, datetimeutil, metrics, logsetup, robots, health, pacing | — | ✅ Phase 1 | |
-| models, classifier | 306/272 | ✅ Sprint 1 | ccarchive has shims; `classify_story()` taxonomy_path arg added |
+| models, classifier | 306/272 | ✅ Sprint 1 | ccarchive shims; `classify_story()` taxonomy_path arg added |
 | storage | 365 | ✅ Sprint 2 | ccarchive shim; concurrency-tested |
-| **browser** | 244 | ✅ Sprint 3 | ccarchive shim; 11 mocked tests; `ccarch health`/`run` verified via shim |
-| **adapters/base** | 123 | ✅ Sprint 4 | ccarchive shim; BFS discovery tests; probe works |
+| **browser** | 244 | ✅ Sprint 3 | ccarchive shim; 11 mocked tests |
+| **adapters/base** | 123 | ✅ Sprint 4 | ccarchive shim; BFS discovery tests |
 | **probe** | 69 | ✅ Sprint 4 | ccarchive shim; offline probe tests |
-| pipeline | 90 | ❌ stays in ccarchive | domain glue; depends on adapters.base, browser, models, storage |
-| cli | ~190 | ❌ stays in ccarchive | domain glue |
+| pipeline | 90 | ❌ stays in ccarchive | domain glue — now imports crawlkit directly |
+| cli | ~190 | ❌ stays in ccarchive | domain glue — now imports crawlkit directly |
+| 6 site adapters | — | ❌ stay in ccarchive | domain-specific — import crawlkit directly |
+
+**Phase 2 complete:** all 6 extractable modules moved. ccarchive glue + site adapters import crawlkit directly. Legacy scripts use ccarchive shims. Clean-install verified (fresh venv, `pip install -e ./crawlkit`, no ccarchive → all 14 modules import). crawlkit v0.2.0.
 
 ## Key finding vs. original plan
 
@@ -153,8 +156,9 @@ after base lands in crawlkit. Ordering: Sprint 3 (browser, DONE) → Sprint 4 (b
 |---|---|---|---|
 | 3 | browser.py (no age_gates dispatcher — finding above) | 3-4 | ✅ DONE 2026-08-20 (crawlkit `3bbb8c8`, ccarchive `b7a20e8`) |
 | 4 | adapters/base.py + probe.py | 4-6 | ✅ DONE 2026-08-20 (crawlkit `1586457`, ccarchive `17b575c`) |
-| 4.5 | glue refactor + clean-install verification | 2-3 | ⏳ next |
-| **Total** | **6 files moved + shims + tests** | **9-13** | |
+| 4.5 | glue refactor + clean-install verification | 2-3 | ✅ DONE 2026-08-20 (crawlkit `35ab955`, ccarchive `a4d8fe3`) |
+| audit | agent audit of Sprints 3-4 | — | ✅ DONE (fixes: crawlkit `b799799`, ccarchive `4582795`) |
+| **Total** | **6 files moved + shims + tests** | **9-13** | **COMPLETE** |
 
 ## Out of scope (unchanged from Phase 2 plan)
 - Twitter/X + Bluesky adapters, audio adapters, semantic dedup, worker pool, per-site rate limiting, browser fingerprinting.
