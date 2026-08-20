@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 2026-08-20 — Sprint 4.5: glue refactor + clean-install verification; v0.2.0
+
+**What changed:**
+- ccarchive's 6 site adapters (ao3, fictionmania, literotica, reddit, rss_feed, xnxx_stories), `pipeline.py`, and `cli.py` now import directly from `crawlkit.*` instead of ccarchive shims / relative `..` imports. The `..classifier` import in 4 adapters stays (ccarchive shim preserves the `taxonomy.json` default that `crawlkit.classifier` doesn't).
+- ccarchive shims (`browser`, `probe`, `adapters/base`, `models`, `classifier`, `storage`, `pacing`, `robots`, `textutil`, etc.) remain only for legacy `scripts/*.py` that import `from ccarchive.X import ...`.
+- **Clean-install verified:** fresh venv + `pip install -e ./crawlkit` with NO ccarchive on path → all 14 crawlkit modules import cleanly.
+- pyproject bumped **0.1.0 → 0.2.0**.
+- Reddit adapter lazy `from .base import Discovered` → `from crawlkit.models import Discovered`; rss_feed same.
+
+**Verification:** crawlkit 38 tests, ccarchive 6 tests, `ccarch health` 5/5 PASS, `ccarch run --site literotica` stores a story.
+
 ## 2026-08-20 — Sprint 4: adapters/base.py + probe.py extracted
 
 **What changed:**

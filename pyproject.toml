@@ -1,6 +1,6 @@
 [project]
 name = "crawlkit"
-version = "0.1.0"
+version = "0.2.0"
 description = "Domain-agnostic primitives for CDP-driven web scraping: CDP session, adapter framework, storage, weighted taxonomy classifier, structured logging, Prometheus metrics, rate limiting, robots.txt compliance. Extracted from ccarchive."
 requires-python = ">=3.10"
 dependencies = [

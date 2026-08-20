@@ -85,12 +85,12 @@ modules:
     path: crawlkit/classifier.py
     does: Layer-3 multi-source scoring with confidence
     status: shipped
-updated: 2026-08-20 02:15 UTC
+updated: 2026-08-20 02:35 UTC
 ---
 
 # AGENTS.md — crawlkit
 
-**Last Updated:** 2026-08-20 02:15 UTC
+**Last Updated:** 2026-08-20 02:35 UTC
 
 ---
 
