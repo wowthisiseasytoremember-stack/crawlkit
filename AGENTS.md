@@ -22,11 +22,12 @@ entrypoints:
   - crawlkit.robots
   - crawlkit.health
   - crawlkit.pacing
-  - crawlkit.browser        # phase 2
-  - crawlkit.adapters.base  # phase 2
-  - crawlkit.storage        # phase 2
-  - crawlkit.models         # phase 2
-  - crawlkit.classifier     # phase 2
+  - crawlkit.browser
+  - crawlkit.adapters.base
+  - crawlkit.storage
+  - crawlkit.models
+  - crawlkit.classifier
+  - crawlkit.probe
 modules:
   - name: Text utilities
     path: crawlkit/textutil.py
@@ -95,7 +96,7 @@ updated: 2026-08-20 02:15 UTC
 
 ## What this is
 
-Production-grade Python primitives for CDP-driven web scraping. Phase 1 ships utilities + observability (8 modules, ~750 LOC). Phase 2 adds browser + adapter + storage + models + classifier (5 modules, ~1,300 LOC).
+Production-grade Python primitives for CDP-driven web scraping. Phase 1 ships utilities + observability (8 modules). Sprints 1-4 ship models, classifier, storage, browser, adapters/base, probe (6 modules) — all with tests.
 
 Every module here is **domain-agnostic**. The adult-content-specific bits (xnxx_stories, fictionmania, literotica, ao3, rss_feed, reddit adapters, taxonomy.json niches) stay in `ccarchive`. crawlkit contains the machinery; ccarchive uses it for one specific vertical.
 
@@ -103,15 +104,16 @@ Every module here is **domain-agnostic**. The adult-content-specific bits (xnxx_
 
 | Task | Use |
 |---|---|
-| Connect to a running Chrome | `from crawlkit.browser import CDPSession` (Phase 2) |
+| Connect to a running Chrome | `from crawlkit.browser import CDPSession` |
 | Check robots.txt | `from crawlkit.robots import RobotsGate` |
-| Pre-flight a URL | `from crawlkit.health import check_site` |
+| Pre-flight a URL | `from crawlkit.health import check_adapter_health` |
 | Rate-limit per host | `from crawlkit.pacing import Pacer` |
 | Prometheus counters/histos | `from crawlkit.metrics import *` |
 | Structured JSON logs | `from crawlkit.logsetup import StructuredLogger` |
-| Normalize text | `from crawlkit.textutil import normalize, dedup_paragraphs` |
+| Normalize text | `from crawlkit.textutil import clean_inline, node_to_paragraphs` |
 | Parse a date | `from crawlkit.datetimeutil import parse_date` |
-| Extract dedup-key from URL | `from crawlkit.urlutil import dedup_key` |
+| Normalize a URL for dedup | `from crawlkit.urlutil import normalize_url` |
+| Probe a live page's selectors | `from crawlkit.probe import probe_url` |
 
 ## Invariants & Guardrails
 

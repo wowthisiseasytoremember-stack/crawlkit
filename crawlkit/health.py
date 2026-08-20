@@ -40,13 +40,21 @@ async def check_adapter_health(
 
     try:
         # If adapter has robots disabled, override the session's robots gate
-        if getattr(adapter, "robots_disabled", False):
-            session.robots = RobotsGate(enabled=False)
+        # for this check only, then restore — otherwise one adapter's setting
+        # leaks to every subsequent adapter sharing the session.
+        original_gate = getattr(session, "robots", None)
+        try:
+            if getattr(adapter, "robots_disabled", False):
+                session.robots = RobotsGate(enabled=False)
 
-        res = await session.fetch(
-            start_url,
-            wait_for=list(getattr(adapter, "listing_ready_selectors", ()) or ("body",)),
-        )
+            res = await session.fetch(
+                start_url,
+                wait_for=list(getattr(adapter, "listing_ready_selectors", ()) or ("body",)),
+            )
+        finally:
+            if original_gate is not None:
+                session.robots = original_gate
+
         if res.status and res.status >= 400:
             return {
                 "site": site_id,
