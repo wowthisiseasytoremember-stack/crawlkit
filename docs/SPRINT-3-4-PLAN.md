@@ -1,7 +1,7 @@
 # Sprint 3–4 Plan — Complete the crawlkit decomposition (verified 2026-08-20)
 
 **Supersedes parts of:** `docs/PHASE-2-EXTRACTION-PLAN.md` and `docs/SPRINT-3-BROWSER-DETAIL.md` where noted.
-**Status:** Ready to execute. Sprint 1 (models+classifier) and Sprint 2 (storage) are DONE and verified (crawlkit 13 tests, ccarchive 6 tests, `ccarch health` all 5 PASS).
+**Status:** **Sprint 3 DONE (2026-08-20).** Sprint 1 (models+classifier) and Sprint 2 (storage) DONE. Remaining: Sprint 4 (adapters/base + probe) and Sprint 4.5 (glue).
 
 ---
 
@@ -12,9 +12,9 @@
 | textutil, urlutil, datetimeutil, metrics, logsetup, robots, health, pacing | — | ✅ Phase 1 | |
 | models, classifier | 306/272 | ✅ Sprint 1 | ccarchive has shims; `classify_story()` taxonomy_path arg added |
 | storage | 365 | ✅ Sprint 2 | ccarchive shim; concurrency-tested |
-| **browser** | 244 | ❌ still in ccarchive | deps: pacing ✅, robots ✅, urlutil ✅ — nothing else |
+| **browser** | 244 | ✅ Sprint 3 | ccarchive shim; 11 mocked tests; `ccarch health`/`run` verified via shim |
 | **probe** | 69 | ❌ still in ccarchive | deps: adapters.base, browser, models, textutil |
-| **adapters/base** | 123 | ❌ still in ccarchive | deps: browser, models, textutil ✅, urlutil ✅ |
+| **adapters/base** | 123 | ❌ still in ccarchive | deps: browser ✅, models ✅, textutil ✅, urlutil ✅ |
 | pipeline | 90 | ❌ stays in ccarchive | domain glue; depends on adapters.base, browser, models, storage |
 | cli | ~190 | ❌ stays in ccarchive | domain glue |
 
@@ -82,7 +82,7 @@ cd ~/Projects/ccarchive && python3 -m ccarchive.cli run --site literotica --limi
 ### Dependency ordering fix
 Original plan put probe in Sprint 3 and adapters/base in Sprint 4, but **probe.py imports
 `from .adapters.base import SourceAdapter`** (probe.py:9). So probe moves **with** Sprint 4,
-after base lands in crawlkit. Ordering: Sprint 3 (browser) → Sprint 4 (base) → Sprint 4.5 (probe, pipeline, cli glue).
+after base lands in crawlkit. Ordering: Sprint 3 (browser, DONE) → Sprint 4 (base) → Sprint 4.5 (probe, pipeline, cli glue).
 
 ### Files
 | File | Action |
@@ -149,12 +149,12 @@ after base lands in crawlkit. Ordering: Sprint 3 (browser) → Sprint 4 (base) �
 
 ## Timeline
 
-| Sprint | Modules | Hours |
-|---|---|---|
-| 3 | browser.py (no age_gates dispatcher — finding above) | 3-4 |
-| 4 | adapters/base.py + probe.py | 4-6 |
-| 4.5 | glue refactor + clean-install verification | 2-3 |
-| **Total** | **6 files moved + shims + tests** | **9-13** |
+| Sprint | Modules | Hours | Status |
+|---|---|---|---|
+| 3 | browser.py (no age_gates dispatcher — finding above) | 3-4 | ✅ DONE 2026-08-20 (crawlkit `3bbb8c8`, ccarchive `b7a20e8`) |
+| 4 | adapters/base.py + probe.py | 4-6 | ⏳ next |
+| 4.5 | glue refactor + clean-install verification | 2-3 | pending |
+| **Total** | **6 files moved + shims + tests** | **9-13** | |
 
 ## Out of scope (unchanged from Phase 2 plan)
 - Twitter/X + Bluesky adapters, audio adapters, semantic dedup, worker pool, per-site rate limiting, browser fingerprinting.
