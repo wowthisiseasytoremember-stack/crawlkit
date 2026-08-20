@@ -1,5 +1,29 @@
 # CHANGELOG
 
+## 2026-08-20 — Sprint 4: adapters/base.py + probe.py extracted
+
+**What changed:**
+- `crawlkit/adapters/` (NEW package) — `base.py` moved from ccarchive: `SourceAdapter` (abstract), `PatternCrawlAdapter` (BFS discovery), `Fetcher` type. Imports rewritten to `crawlkit.*`.
+- `crawlkit/probe.py` — moved from ccarchive: `probe_url()` live selector diagnostic. Imports rewritten.
+- ccarchive `adapters/base.py` + `probe.py` — thin shims re-exporting from crawlkit.
+- Tests: `test_adapter_base.py` (abstract contract, is_story_url/is_listing_url routing, BFS discovery: dedup, off-host filtering, depth limit, max_pages bound, fetch-failure tolerance), `test_probe.py` (offline HTML-string probe, missing-author tolerance, save_html).
+
+**Verified:** crawlkit 38 tests pass (was 24). ccarchive 6 tests pass. `ccarch health` all 5 PASS. `ccarch run --site reddit` discovers 75 posts, extracts 1. `ccarch probe` works for xnxx_stories/literotica/ao3.
+
+**Known pre-existing exceptions (not regressions):**
+- Reddit probe on a *listing* URL fails (`parse_story` expects single-post shape `[post, comments]`); `run` works because discovery yields per-post URLs.
+- FictionMania robots.txt is `Disallow: /` — robots-gated probe/run always fails; working FM crawls (fm_crawl.py) pass `RobotsGate(enabled=False)`.
+
+## 2026-08-20 — Sprint 3: browser.py extracted
+
+**What changed:**
+- `crawlkit/browser.py` (NEW) — `CDPSession`, `FetchResult`, `FetchError`, `RobotsDisallowed`, `BLOCKED_RESOURCE_TYPES`, generic consent-dismissal moved verbatim from ccarchive (imports rewritten to `crawlkit.*`, logger renamed). Added `__all__`.
+- `tests/test_browser.py` (NEW) — 11 mocked-Playwright tests (no live Chrome): fetch happy path, robots-denied, retry-then-raise/succeed, 429, consent dismissal, closed-page property, route filter, error attributes.
+- ccarchive `browser.py` — thin shim re-exporting from crawlkit.
+- Dropped the planned `age_gates.py` dispatcher — verified dismissal is generic (CSS/text lists), not Reddit-specific.
+
+**Verified:** crawlkit 24 tests pass; `ccarch health` all 5 PASS; `ccarch run --site literotica` stores stories via shim.
+
 ## 2026-08-20 — health.py made generic (registry injected)
 
 **What changed:**

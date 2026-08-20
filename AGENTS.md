@@ -63,11 +63,15 @@ modules:
   - name: CDP browser session
     path: crawlkit/browser.py
     does: Chrome DevTools Protocol session + media aborter + age-gate dismisser
-    status: planned
+    status: shipped
   - name: Adapter base classes
     path: crawlkit/adapters/base.py
     does: PatternCrawlAdapter + SourceAdapter base classes for multi-source ingestion
-    status: planned
+    status: shipped
+  - name: Selector probe
+    path: crawlkit/probe.py
+    does: Live selector diagnostic — probe_url() extracts fields + attribution from a live page
+    status: shipped
   - name: SQLite storage
     path: crawlkit/storage.py
     does: Idempotent upsert + normalized tag tables + JSONL/CSV export
@@ -80,12 +84,12 @@ modules:
     path: crawlkit/classifier.py
     does: Layer-3 multi-source scoring with confidence
     status: shipped
-updated: 2026-08-20 00:55 UTC
+updated: 2026-08-20 02:15 UTC
 ---
 
 # AGENTS.md — crawlkit
 
-**Last Updated:** 2026-08-20 00:55 UTC
+**Last Updated:** 2026-08-20 02:15 UTC
 
 ---
 
